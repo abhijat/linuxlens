@@ -35,7 +35,7 @@ func ListProcFiles() []LensProcess {
 				continue
 			}
 
-			status, err := getProcessStatus(pid)
+			status, err := processState(pid)
 			if err != nil {
 				continue
 			}

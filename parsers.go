@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 )
 
-func resolvePath(processId string, filename string) string {
-	return filepath.Join("/proc", processId, filename)
+func resolvePath(pid string, filename string) string {
+	return filepath.Join("/proc", pid, filename)
 }
 
 func sanitize(data []byte) string {
@@ -57,7 +57,7 @@ func parseUsername(pid string) (*user.User, error) {
 	return u, nil
 }
 
-func getProcessStatus(pid string) (string, error) {
+func processState(pid string) (string, error) {
 
 	statusFile := resolvePath(pid, "status")
 
