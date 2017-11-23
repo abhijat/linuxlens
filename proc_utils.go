@@ -11,7 +11,7 @@ func isNumeric(dirName string) bool {
 	return err == nil
 }
 
-func ListProcFiles() []LensProcess {
+func GetProcesses() []LensProcess {
 	procPath := "/proc"
 
 	files, err := ioutil.ReadDir(procPath)
