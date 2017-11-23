@@ -27,3 +27,11 @@ func NewProcess(commandline string, user user.User, status string) (*LensProcess
 		Status:      status,
 	}, nil
 }
+
+type CpuInfo struct {
+	Model          string
+	PerCpuMhz      string
+	CacheSize      string
+	CoresPerCPU    uint8
+	ProcessorCount uint8
+}

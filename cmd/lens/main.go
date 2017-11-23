@@ -11,7 +11,22 @@ import (
 func seedRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/processes", GetProcessList).Methods("GET")
+	router.HandleFunc("/cpu", GetCpuInfo).Methods("GET")
 	return router
+}
+
+func GetCpuInfo(w http.ResponseWriter, r *http.Request) {
+	log.Infof("[%s] %s", r.Method, r.URL)
+
+	cpuInfo, err := linuxlens.ParseCpuInfo()
+	if err != nil {
+		http.Error(w, "failed to fetch cpu info", 500)
+	}
+
+	err = json.NewEncoder(w).Encode(cpuInfo)
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 func GetProcessList(w http.ResponseWriter, r *http.Request) {
