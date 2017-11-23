@@ -12,7 +12,22 @@ func seedRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/processes", GetProcessList).Methods("GET")
 	router.HandleFunc("/cpu", GetCpuInfo).Methods("GET")
+	router.HandleFunc("/memory", GetMemInfo).Methods("GET")
 	return router
+}
+
+func GetMemInfo(w http.ResponseWriter, r *http.Request) {
+	log.Infof("[%s] %s", r.Method, r.URL)
+
+	memStats, err := linuxlens.ParseMemInfo()
+	if err != nil {
+		http.Error(w, "failed to fetch mem info", 500)
+	}
+
+	err = json.NewEncoder(w).Encode(memStats)
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 func GetCpuInfo(w http.ResponseWriter, r *http.Request) {
