@@ -6,7 +6,6 @@ import (
 	"linuxlens"
 	"encoding/json"
 	log "github.com/Sirupsen/logrus"
-	"os"
 )
 
 func seedRoutes() *mux.Router {
@@ -56,22 +55,18 @@ func GetProcessList(w http.ResponseWriter, r *http.Request) {
 }
 
 func init() {
-	formatter := log.TextFormatter{
-		FullTimestamp: true,
-	}
-
+	formatter := log.TextFormatter{FullTimestamp: true}
 	log.SetFormatter(&formatter)
 }
 
 func main() {
 
-	args := os.Args
-	listenAddress := ":8080"
-	if len(args) == 2 {
-		listenAddress = args[1]
+	cfg, err := linuxlens.LoadConfig("server.cfg")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	log.Info("booting up server at ", listenAddress)
+	log.Info("booting up server at ", cfg.ServerAddress)
 	router := seedRoutes()
-	log.Fatal(http.ListenAndServe(listenAddress, router))
+	log.Fatal(http.ListenAndServe(cfg.ServerAddress, router))
 }
