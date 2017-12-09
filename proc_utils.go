@@ -2,8 +2,9 @@ package linuxlens
 
 import (
 	"io/ioutil"
-	"log"
+	log "github.com/Sirupsen/logrus"
 	"strconv"
+	"strings"
 )
 
 func isNumeric(dirName string) bool {
@@ -11,7 +12,7 @@ func isNumeric(dirName string) bool {
 	return err == nil
 }
 
-func GetProcesses() []LensProcess {
+func GetProcesses(cfg *ServerConfig) []LensProcess {
 	procPath := "/proc"
 
 	files, err := ioutil.ReadDir(procPath)
@@ -20,6 +21,8 @@ func GetProcesses() []LensProcess {
 	}
 
 	processes := make([]LensProcess, 0, 1024)
+	blacklist := cfg.BlacklistPatterns
+
 	for _, file := range files {
 		if file.IsDir() && isNumeric(file.Name()) {
 
@@ -27,6 +30,18 @@ func GetProcesses() []LensProcess {
 
 			cmdLine, err := parseCmdLine(pid)
 			if err != nil {
+				continue
+			}
+
+			blacklisted := false
+			for _, pattern := range blacklist {
+				if strings.Contains(cmdLine, pattern) {
+					blacklisted = true
+					break
+				}
+			}
+
+			if blacklisted {
 				continue
 			}
 

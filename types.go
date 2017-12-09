@@ -35,3 +35,8 @@ type CpuInfo struct {
 	CoresPerCPU    uint8
 	ProcessorCount uint8
 }
+
+type ServerConfig struct {
+	BlacklistPatterns []string `json:"blacklist_patterns"`
+	ServerAddress     string   `json:"server_address"`
+}
