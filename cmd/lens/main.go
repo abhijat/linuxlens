@@ -6,6 +6,7 @@ import (
 	"linuxlens"
 	"encoding/json"
 	log "github.com/Sirupsen/logrus"
+	"os"
 )
 
 func seedRoutes() *mux.Router {
@@ -63,7 +64,14 @@ func init() {
 }
 
 func main() {
-	log.Info("booting up server")
+
+	args := os.Args
+	listenAddress := ":8080"
+	if len(args) == 2 {
+		listenAddress = args[1]
+	}
+
+	log.Info("booting up server at ", listenAddress)
 	router := seedRoutes()
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(listenAddress, router))
 }
