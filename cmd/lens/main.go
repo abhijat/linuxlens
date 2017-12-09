@@ -8,6 +8,10 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+var (
+	cfg *linuxlens.ServerConfig
+)
+
 func seedRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/processes", GetProcessList).Methods("GET")
@@ -47,7 +51,8 @@ func GetCpuInfo(w http.ResponseWriter, r *http.Request) {
 func GetProcessList(w http.ResponseWriter, r *http.Request) {
 
 	log.Infof("[%s] %s", r.Method, r.URL)
-	processes := linuxlens.GetProcesses()
+	processes := linuxlens.GetProcesses(cfg)
+
 	err := json.NewEncoder(w).Encode(processes)
 	if err != nil {
 		log.Error(err)
@@ -61,7 +66,8 @@ func init() {
 
 func main() {
 
-	cfg, err := linuxlens.LoadConfig("server.cfg")
+	var err error
+	cfg, err = linuxlens.LoadConfig("server.cfg")
 	if err != nil {
 		log.Fatal(err)
 	}
